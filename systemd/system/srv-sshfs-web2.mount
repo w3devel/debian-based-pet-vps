@@ -47,7 +47,16 @@ Type=fuse.sshfs
 #                         requires 'user_allow_other' in /etc/fuse.conf
 #   default_permissions — enforce Unix permission bits even with allow_other
 #   UserKnownHostsFile  — explicit known_hosts; no global fallback
-Options=IdentityFile=/etc/sshfs/web2-deploy-key,StrictHostKeyChecking=yes,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,_netdev,allow_other,default_permissions,UserKnownHostsFile=/etc/sshfs/web2-known_hosts
+Options=\
+  IdentityFile=/etc/sshfs/web2-deploy-key,\
+  StrictHostKeyChecking=yes,\
+  reconnect,\
+  ServerAliveInterval=15,\
+  ServerAliveCountMax=3,\
+  _netdev,\
+  allow_other,\
+  default_permissions,\
+  UserKnownHostsFile=/etc/sshfs/web2-known_hosts
 
 TimeoutSec=30
 
