@@ -1,0 +1,32 @@
+[Unit]
+Description=Boot-time audit: web3 reverse-proxy container, Caddy, and firewall
+Documentation=file:///usr/local/libexec/web3-audit.sh
+
+# Run after all services this audit depends on are started
+After=network-online.target systemd-nspawn@web3.service caddy.service
+Wants=network-online.target
+Requires=systemd-nspawn@web3.service caddy.service
+
+[Service]
+Type=oneshot
+
+# The audit script must be deployed to this path with mode 0755:
+#   sudo install -m 0755 scripts/web3-audit.sh /usr/local/libexec/web3-audit.sh
+ExecStart=/usr/local/libexec/web3-audit.sh
+
+# Keep logs from previous runs — useful for comparing boot-to-boot
+StandardOutput=journal
+StandardError=journal
+
+# Run as root so we can inspect systemd unit properties and network state
+User=root
+
+# Harden the audit service itself
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadOnlyPaths=/
+
+[Install]
+WantedBy=multi-user.target

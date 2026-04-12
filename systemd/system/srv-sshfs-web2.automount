@@ -1,0 +1,29 @@
+# /etc/systemd/system/srv-sshfs-web2.automount
+#
+# Optional automount companion to srv-sshfs-web2.mount.
+# Activates the SSHFS mount on first access rather than at boot, which avoids
+# blocking boot if the remote host is temporarily unreachable.
+#
+# Deploy to: /etc/systemd/system/srv-sshfs-web2.automount
+#
+# To use automount instead of the always-on mount:
+#   sudo systemctl disable srv-sshfs-web2.mount
+#   sudo systemctl enable --now srv-sshfs-web2.automount
+#
+# NOTE: The web2 container must NOT start before the mount is triggered.
+# If using automount, remove 'Requires=srv-sshfs-web2.mount' from
+# web2-nspawn-override.conf and start the container only after first access.
+# The simpler production-grade approach is the always-on .mount unit.
+
+[Unit]
+Description=SSHFS automount: remote content for web2 container
+After=network-online.target
+Wants=network-online.target
+
+[Automount]
+Where=/srv/sshfs/web2
+# 0 = never unmount idle mount automatically (keeps the connection alive)
+TimeoutIdleSec=0
+
+[Install]
+WantedBy=multi-user.target

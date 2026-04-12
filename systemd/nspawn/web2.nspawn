@@ -1,0 +1,30 @@
+# /etc/systemd/nspawn/web2.nspawn
+#
+# systemd-nspawn machine configuration for the "web2" container.
+# web2 serves content from a remote host's directory that is mounted on the
+# VPS via SSHFS (srv-sshfs-web2.mount) and bind-mounted into this container.
+#
+# Deploy to: /etc/systemd/nspawn/web2.nspawn
+# Rootfs at: /var/lib/machines/web2  (debootstrap Trixie)
+#
+# Depends on: srv-sshfs-web2.mount must be active before the container starts.
+# The container unit ordering is controlled via web2-nspawn-override.conf.
+#
+# After any change:
+#   sudo systemctl daemon-reload
+#   sudo systemctl restart systemd-nspawn@web2
+
+[Exec]
+# Boot the container's own init system (systemd inside container)
+Boot=yes
+
+[Files]
+# Bind-mount the SSHFS-mounted remote directory into the container as Apache's webroot.
+# Adjust the container-side path to match your Apache DocumentRoot.
+# The host-side mount point must already be active (srv-sshfs-web2.mount).
+Bind=/srv/sshfs/web2:/var/www/html
+
+[Network]
+# Create a private virtual ethernet pair (ve-web2 on host, host0 in container)
+VirtualEthernet=yes
+Private=yes

@@ -1,0 +1,64 @@
+# /etc/systemd/system/srv-sshfs-web2.mount
+#
+# systemd mount unit for the SSHFS remote directory used by web2.
+# Mounts the remote host's directory at /srv/sshfs/web2 on the VPS host.
+# The web2 container then bind-mounts this path into Apache's webroot.
+#
+# Deploy to: /etc/systemd/system/srv-sshfs-web2.mount
+#
+# Prerequisites:
+#   sudo apt-get install -y sshfs
+#   sudo mkdir -p /srv/sshfs/web2
+#   sudo mkdir -p /etc/sshfs
+#   sudo install -m 0600 -o root -g root /dev/null /etc/sshfs/web2-deploy-key
+#   # Paste private key content into /etc/sshfs/web2-deploy-key
+#   ssh-keyscan -H <REMOTE_HOST> | sudo tee /etc/sshfs/web2-known_hosts
+#
+# allow_other note: requires 'user_allow_other' in /etc/fuse.conf
+#   sudo sh -c 'echo "user_allow_other" >> /etc/fuse.conf'
+#
+# Replace all <PLACEHOLDER> values before deploying.
+#
+# Apply with:
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now srv-sshfs-web2.mount
+
+[Unit]
+Description=SSHFS mount: remote content for web2 container
+Documentation=file:///etc/systemd/system/srv-sshfs-web2.mount
+After=network-online.target
+Wants=network-online.target
+
+[Mount]
+# Format: <REMOTE_USER>@<REMOTE_HOST>:<REMOTE_PATH>
+# Example: deploy@192.0.2.10:/srv/www/mysite
+What=<REMOTE_USER>@<REMOTE_HOST>:<REMOTE_PATH>
+Where=/srv/sshfs/web2
+Type=fuse.sshfs
+
+# Options explanation:
+#   IdentityFile        — dedicated deploy key (no passphrase, mode 0600, owner root)
+#   StrictHostKeyChecking=yes — prevent MITM; pre-populate known_hosts with ssh-keyscan
+#   reconnect           — attempt transparent reconnect on disconnect
+#   ServerAliveInterval — send keepalive every 15 s (prevents silent drop)
+#   ServerAliveCountMax — declare dead after 3 missed keepalives (~45 s total)
+#   _netdev             — treat as network fs; mount only after network is up
+#   allow_other         — allow root-owned container process to read mount;
+#                         requires 'user_allow_other' in /etc/fuse.conf
+#   default_permissions — enforce Unix permission bits even with allow_other
+#   UserKnownHostsFile  — explicit known_hosts; no global fallback
+Options=\
+  IdentityFile=/etc/sshfs/web2-deploy-key,\
+  StrictHostKeyChecking=yes,\
+  reconnect,\
+  ServerAliveInterval=15,\
+  ServerAliveCountMax=3,\
+  _netdev,\
+  allow_other,\
+  default_permissions,\
+  UserKnownHostsFile=/etc/sshfs/web2-known_hosts
+
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target

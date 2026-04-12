@@ -1,0 +1,45 @@
+# /etc/sshfs/web2-ssh_config  (example — copy, edit, and deploy as shown)
+#
+# SSH client configuration for the web2 SSHFS deploy connection.
+# Tightly scoped to the remote host with no fallback options.
+#
+# Deploy:
+#   sudo mkdir -p /etc/sshfs
+#   sudo cp ssh/web2-sshfs-ssh_config.example /etc/sshfs/web2-ssh_config
+#   sudo chmod 0600 /etc/sshfs/web2-ssh_config
+#
+# Key setup (on the VPS):
+#   ssh-keygen -t ed25519 -C "web2-sshfs@$(hostname)" -f /etc/sshfs/web2-deploy-key -N ""
+#   sudo chmod 0600 /etc/sshfs/web2-deploy-key
+#   # Copy the public key to the remote host (see authorized_keys note below)
+#   cat /etc/sshfs/web2-deploy-key.pub
+#
+# Known-hosts setup (on the VPS):
+#   ssh-keyscan -H <REMOTE_HOST> | sudo tee /etc/sshfs/web2-known_hosts
+#   sudo chmod 0600 /etc/sshfs/web2-known_hosts
+#
+# authorized_keys on the REMOTE HOST (in ~/.ssh/authorized_keys for <REMOTE_USER>):
+#   restrict,from="<VPS_PUBLIC_IP>",command="/usr/lib/openssh/sftp-server -R" \
+#   ssh-ed25519 AAAA... web2-sshfs@<VPS_HOSTNAME>
+#
+#   Options used:
+#     restrict          — deny all features not explicitly re-enabled
+#     from="<VPS_IP>"   — only accept connections from this VPS IP
+#     command="sftp-server -R" — read-only SFTP subsystem; prevents shell access
+#                                use sftp-server without -R if writes are needed
+#
+# Replace all <PLACEHOLDER> values before deploying.
+
+Host web2-remote
+    HostName <REMOTE_HOST>
+    User <REMOTE_USER>
+    IdentityFile /etc/sshfs/web2-deploy-key
+    IdentitiesOnly yes
+    StrictHostKeyChecking yes
+    UserKnownHostsFile /etc/sshfs/web2-known_hosts
+    ServerAliveInterval 15
+    ServerAliveCountMax 3
+    # Disable features not needed for SSHFS
+    ForwardAgent no
+    ForwardX11 no
+    PermitLocalCommand no

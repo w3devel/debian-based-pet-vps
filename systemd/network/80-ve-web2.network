@@ -1,0 +1,24 @@
+# /etc/systemd/network/80-ve-web2.network
+#
+# systemd-networkd configuration for the HOST side of the web2 nspawn veth pair.
+# Assign the host veth a static IP and enable IP forwarding on this link.
+#
+# Deploy to: /etc/systemd/network/80-ve-web2.network  (on host)
+#
+# After deploying:
+#   sudo systemctl restart systemd-networkd
+#
+# Replace <HOST_VETH_IP_WEB2> with the desired host-side IP, e.g. 10.200.2.1
+
+[Match]
+Name=ve-web2
+
+[Network]
+# Host side of the private veth — Varnish connects to the container via this
+Address=<HOST_VETH_IP_WEB2>/24     # e.g. 10.200.2.1/24
+
+# Allow the host (and thus Varnish) to forward packets toward the container
+IPForward=yes
+
+# Do NOT masquerade — the container IP is private and only the host proxies it
+IPMasquerade=no

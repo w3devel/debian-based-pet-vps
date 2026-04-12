@@ -1,0 +1,34 @@
+# /etc/systemd/nspawn/web3.nspawn
+#
+# systemd-nspawn machine configuration for the "web3" container.
+# web3 is a dedicated reverse-proxy container running Caddy.
+# It accepts traffic forwarded by the host-side Caddy and proxies it
+# to a configurable remote upstream.
+#
+# Topology:
+#   Internet → Caddy :443 (host) → web3 :8080 (container) → <REMOTE_UPSTREAM>
+#
+# Deploy to: /etc/systemd/nspawn/web3.nspawn
+# Rootfs at: /var/lib/machines/web3  (debootstrap Trixie + Caddy)
+#
+# After any change:
+#   sudo systemctl daemon-reload
+#   sudo systemctl restart systemd-nspawn@web3
+
+[Exec]
+# Boot the container's own init system (systemd inside container)
+Boot=yes
+
+[Files]
+# Bind-mount the Caddyfile from the host into the container.
+# Edit /etc/web3/Caddyfile to set REMOTE_UPSTREAM before starting.
+# The host directory must exist:
+#   sudo mkdir -p /etc/web3
+#   sudo cp web3/Caddyfile /etc/web3/Caddyfile
+#   sudo systemctl restart systemd-nspawn@web3
+Bind=/etc/web3/Caddyfile:/etc/caddy/Caddyfile
+
+[Network]
+# Create a private virtual ethernet pair (ve-web3 on host, host0 in container)
+VirtualEthernet=yes
+Private=yes
