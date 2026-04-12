@@ -1,0 +1,31 @@
+# /etc/systemd/nspawn/web1.nspawn
+#
+# systemd-nspawn machine configuration for the "web1" container.
+# This file controls how the container is started by the
+# systemd-nspawn@web1.service unit.
+#
+# Deploy to: /etc/systemd/nspawn/web1.nspawn
+# Rootfs at: /var/lib/machines/web1  (debootstrap Trixie)
+#
+# After any change:
+#   sudo systemctl daemon-reload
+#   sudo systemctl restart systemd-nspawn@web1
+
+[Exec]
+# Boot the container's own init system (systemd inside container)
+Boot=yes
+
+# Run as many login processes as needed (mostly for machinectl shell)
+# Limit=...  # add resource limits here if desired
+
+[Files]
+# Bind-mount read-only paths from host into container (optional examples):
+# BindReadOnly=/etc/localtime
+# BindReadOnly=/etc/locale.conf
+
+[Network]
+# Create a private virtual ethernet pair (ve-web1 on host, host0 in container)
+VirtualEthernet=yes
+Private=yes
+# Isolate the container network — it cannot reach the host network stack
+# except through the veth pair managed by systemd-networkd.

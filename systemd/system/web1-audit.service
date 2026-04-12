@@ -1,0 +1,36 @@
+[Unit]
+Description=Boot-time audit: web1 container, Varnish, Caddy, and firewall
+Documentation=file:///usr/local/libexec/web1-audit.sh
+
+# Run after all services this audit depends on are started
+After=network-online.target systemd-nspawn@web1.service varnish.service caddy.service
+Wants=network-online.target
+Requires=systemd-nspawn@web1.service varnish.service caddy.service
+
+# If the audit fails, the failure will be visible in 'systemctl status'
+# and 'journalctl -u web1-audit.service'.  Optionally wire to a notification
+# unit by adding: OnFailure=notify-admin@%n.service
+
+[Service]
+Type=oneshot
+
+# The audit script must be deployed to this path with mode 0755:
+#   sudo install -m 0755 scripts/web1-audit.sh /usr/local/libexec/web1-audit.sh
+ExecStart=/usr/local/libexec/web1-audit.sh
+
+# Keep logs from previous runs — useful for comparing boot-to-boot
+StandardOutput=journal
+StandardError=journal
+
+# Run as root so we can inspect systemd unit properties and network state
+User=root
+
+# Harden the audit service itself
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadOnlyPaths=/
+
+[Install]
+WantedBy=multi-user.target

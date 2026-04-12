@@ -1,0 +1,72 @@
+# /etc/caddy/Caddyfile
+#
+# Multi-site Caddy configuration for w3dev.tech VPS stack.
+# TLS is terminated here; all backend traffic is plain HTTP to Varnish.
+#
+# Replace all <PLACEHOLDER> values before deploying.
+#
+# Topology:
+#   Internet → Caddy :443/:80 → Varnish 127.0.0.1:6081 → Apache 10.200.1.2:8080
+#
+# Caddy automatically obtains and renews Let's Encrypt certificates.
+# Ensure <YOUR_DOMAIN> DNS A/AAAA records point to this server before starting.
+
+{
+    # Global options
+    email <YOUR_ADMIN_EMAIL>
+
+    # Uncomment to use Let's Encrypt staging while testing (avoids rate limits):
+    # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+# ── Site 1 ────────────────────────────────────────────────────────────────────
+# www → apex redirect then proxy to Varnish
+
+<YOUR_WWW_DOMAIN> {
+    redir https://<YOUR_DOMAIN>{uri} permanent
+}
+
+<YOUR_DOMAIN> {
+    # Forward client IP to Varnish/Apache
+    header_up X-Forwarded-Proto https
+    header_up X-Real-IP {remote_host}
+
+    reverse_proxy 127.0.0.1:6081 {
+        # Pass the original Host header so Varnish/Apache can route by hostname
+        header_up Host {host}
+
+        # Health check — remove if Varnish is not set up with a health probe
+        health_uri /
+        health_interval 30s
+    }
+
+    # Logging (optional — Caddy logs to stdout/journald by default)
+    log {
+        output stderr
+        format console
+    }
+}
+
+# ── Site 2 (multi-site example) ───────────────────────────────────────────────
+# Duplicate and adapt this block for additional domains.
+# Remove this section if you are serving only one domain.
+
+<YOUR_SECOND_WWW_DOMAIN> {
+    redir https://<YOUR_SECOND_DOMAIN>{uri} permanent
+}
+
+<YOUR_SECOND_DOMAIN> {
+    header_up X-Forwarded-Proto https
+    header_up X-Real-IP {remote_host}
+
+    reverse_proxy 127.0.0.1:6081 {
+        header_up Host {host}
+        health_uri /
+        health_interval 30s
+    }
+
+    log {
+        output stderr
+        format console
+    }
+}

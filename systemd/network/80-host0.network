@@ -1,0 +1,28 @@
+# /etc/systemd/network/80-host0.network
+#
+# systemd-networkd configuration for the CONTAINER side of the nspawn veth pair.
+# This file lives INSIDE the container rootfs.
+#
+# Deploy to: /var/lib/machines/web1/etc/systemd/network/80-host0.network
+#            (which appears as /etc/systemd/network/80-host0.network inside the container)
+#
+# Then enable networkd inside the container:
+#   sudo systemd-nspawn -D /var/lib/machines/web1 /bin/bash -c \
+#       "systemctl enable systemd-networkd"
+#
+# Replace <CONTAINER_IP> and <HOST_VETH_IP> before deploying.
+
+[Match]
+# systemd-nspawn names the container-side interface "host0"
+Name=host0
+
+[Network]
+# Container's private IP — Apache binds here, Varnish uses this as its backend
+Address=<CONTAINER_IP>/24       # e.g. 10.200.1.2/24
+
+# Route outbound container traffic (apt updates, DNS) via host veth
+Gateway=<HOST_VETH_IP>          # e.g. 10.200.1.1
+
+# Public resolver — replace with your preferred DNS if needed
+DNS=1.1.1.1
+DNS=9.9.9.9

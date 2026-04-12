@@ -1,0 +1,38 @@
+# /home/tunnel/.ssh/authorized_keys  (example — do NOT commit real keys)
+#
+# Each line is one public key with options that restrict what the key may do.
+# Replace <YOUR_PUBLIC_KEY> with the actual key string and <KEY_COMMENT> with
+# a meaningful label (e.g. "laptop-2025", "workstation-alice").
+#
+# KEY OPTION REFERENCE:
+#   restrict             — deny all features not explicitly re-enabled below
+#   permitopen="H:P"     — allow local port-forwarding only to host H on port P
+#   from="IP/CIDR"       — restrict key use to connections originating from that IP
+#   command="CMD"        — force execution of CMD instead of any requested command
+#   no-pty               — prevent interactive PTY allocation
+#   no-agent-forwarding  — prevent SSH agent forwarding
+#   no-X11-forwarding    — prevent X11 forwarding
+#
+# CLIENT USAGE EXAMPLE (forward Apache for local inspection, no shell):
+#   ssh -N -l tunnel <VPS_PUBLIC_IP> -L 8080:<CONTAINER_IP>:8080
+#   # Then browse: http://localhost:8080/
+
+# ── Example 1: forward to Apache only (no source-IP restriction) ──────────────
+# Use this when your workstation IP changes (e.g. laptop on dynamic IP).
+
+no-pty,no-agent-forwarding,no-X11-forwarding,restrict,permitopen="<CONTAINER_IP>:8080" <YOUR_PUBLIC_KEY> <KEY_COMMENT>
+
+# ── Example 2: forward to Apache, restricted to a specific source IP ──────────
+# Preferred when your admin workstation has a static/known IP.
+# Replace <ADMIN_SOURCE_IP> with e.g. 203.0.113.10 or 203.0.113.0/24
+
+# from="<ADMIN_SOURCE_IP>",no-pty,no-agent-forwarding,no-X11-forwarding,restrict,permitopen="<CONTAINER_IP>:8080" <YOUR_PUBLIC_KEY> <KEY_COMMENT>
+
+# ── Example 3: forward + force nologin command (belt-and-suspenders) ──────────
+# Explicitly prevents any interactive shell even if sshd configuration changes.
+
+# command="/usr/sbin/nologin",no-pty,no-agent-forwarding,no-X11-forwarding,restrict,permitopen="<CONTAINER_IP>:8080" <YOUR_PUBLIC_KEY> <KEY_COMMENT>
+
+# ── Example 4: second key for a different operator (different target port) ────
+
+# no-pty,no-agent-forwarding,no-X11-forwarding,restrict,permitopen="<CONTAINER_IP>:8080" <YOUR_SECOND_PUBLIC_KEY> <SECOND_KEY_COMMENT>
