@@ -1,0 +1,48 @@
+# /etc/caddy/Caddyfile  (inside web3 container)
+# /etc/web3/Caddyfile   (on host — bind-mounted into container at runtime)
+#
+# web3: reverse-proxy container configuration.
+# This Caddy instance runs INSIDE the systemd-nspawn web3 container and
+# proxies inbound traffic to a configurable remote upstream.
+#
+# Topology:
+#   Internet → Caddy :443/:80 (host) → web3 container :8080 → <REMOTE_UPSTREAM>
+#
+# The host-side Caddy handles TLS termination and forwards plain HTTP here.
+# This container adds a network isolation boundary between the host and the
+# upstream: only traffic permitted by this config can flow to the upstream.
+#
+# Replace <REMOTE_UPSTREAM> with the upstream URL before deploying.
+# Recommended upstream formats:
+#   http://10.x.x.x:PORT        — WireGuard/Tailscale peer (preferred)
+#   http://upstream.example.com — public upstream (use a private network if possible)
+#
+# After editing, restart the container:
+#   sudo systemctl restart systemd-nspawn@web3
+
+:8080 {
+    # ── Reverse proxy to remote upstream ─────────────────────────────────────
+    reverse_proxy <REMOTE_UPSTREAM> {
+        # Standard proxy headers — let the upstream know the real client details
+        header_up X-Forwarded-For   {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Host  {host}
+
+        # Preserve the original Host header for upstream virtual-host routing
+        header_up Host {host}
+
+        # Reasonable timeouts for a remote upstream over a private network.
+        # Increase response_header_timeout if the upstream is slow to respond.
+        transport http {
+            dial_timeout            10s
+            response_header_timeout 30s
+            read_buffer_size        4096
+        }
+    }
+
+    # Logging — goes to stdout → journald via the nspawn container unit
+    log {
+        output stderr
+        format console
+    }
+}

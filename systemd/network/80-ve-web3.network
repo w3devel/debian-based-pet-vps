@@ -1,0 +1,29 @@
+# /etc/systemd/network/80-ve-web3.network
+#
+# systemd-networkd configuration for the HOST side of the web3 nspawn veth pair.
+# web3 (reverse proxy container) needs to make OUTBOUND connections to the
+# remote upstream, so masquerading is enabled on this interface.
+#
+# Deploy to: /etc/systemd/network/80-ve-web3.network  (on host)
+#
+# After deploying:
+#   sudo systemctl restart systemd-networkd
+#
+# Replace <HOST_VETH_IP_WEB3> with the desired host-side IP, e.g. 10.200.3.1
+
+[Match]
+Name=ve-web3
+
+[Network]
+# Host side of the private veth
+Address=<HOST_VETH_IP_WEB3>/24     # e.g. 10.200.3.1/24
+
+# Allow the host to forward packets toward and from the container
+IPForward=yes
+
+# Enable masquerade so the container can reach the remote upstream.
+# The container's outbound traffic will appear as the VPS public IP.
+# If the upstream is on a WireGuard/Tailscale network, ensure the
+# WireGuard/Tailscale routes are available on the host before the
+# container starts.
+IPMasquerade=yes
