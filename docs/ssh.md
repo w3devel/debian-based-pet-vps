@@ -28,7 +28,6 @@ sudo nano /etc/ssh/sshd_config.d/99-hardening.conf
 # Keys only; no passwords; no root login.
 
 # ── Authentication ────────────────────────────────────────────────────────────
-Protocol 2
 PasswordAuthentication no
 KbdInteractiveAuthentication no
 ChallengeResponseAuthentication no

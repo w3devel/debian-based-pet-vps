@@ -31,8 +31,10 @@ sudo apt install cloudflared
 ### Option B — Direct .deb download (pin a specific version)
 
 ```bash
-# Replace <VERSION> with the version you want, e.g. 2024.11.0
-curl -fsSL "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb" \
+# Replace <VERSION> with the release tag, e.g. 2024.11.0
+# Find releases at: https://github.com/cloudflare/cloudflared/releases
+CLOUDFLARED_VERSION=<VERSION>
+curl -fsSL "https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-amd64.deb" \
   -o /tmp/cloudflared.deb
 sudo dpkg -i /tmp/cloudflared.deb
 ```

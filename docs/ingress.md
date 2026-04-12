@@ -14,8 +14,8 @@ Cloudflare (DNS / WAF / CDN)
    ▼
 cloudflared (systemd service, outbound-only)
    │
-   ├── hostname A → http://127.0.0.1:<portA>   (direct-to-service)
-   ├── hostname B → http://127.0.0.1:<portB>   (direct-to-service)
+   ├── hostname A → http://127.0.0.1:3000   (direct-to-service)
+   ├── hostname B → http://127.0.0.1:4000   (direct-to-service)
    └── hostname C → http://127.0.0.1:8080      (Traefik, multi-app)
                           │
                           ├── app1.example.com → 127.0.0.1:<port1>
