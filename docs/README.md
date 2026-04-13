@@ -1,5 +1,4 @@
-# /docs — Ingress & Service Exposure Patterns
-# /docs — Ingress, VPN & Security Patterns
+# Ingress & Service Exposure Patterns
 
 This directory documents the recommended patterns for exposing services on a
 **Debian 12 (bookworm)** pet VPS where:
@@ -35,6 +34,7 @@ This directory documents the recommended patterns for exposing services on a
 |------|---------|
 | [security/ssh-hardening.md](security/ssh-hardening.md) | SSH hardening with a non-standard port (`${SSH_PORT}` placeholder), key-only auth, Fail2ban, and nftables integration. |
 | [security/audit-over-vpn.md](security/audit-over-vpn.md) | nmap audit workflow and script — verify open ports (including Docker/Podman published ports) from a connected VPN peer. |
+| [security/crowdsec-nftables.md](security/crowdsec-nftables.md) | CrowdSec installation + nftables bouncer integration for SSH-only ingress (Cloudflare Tunnel + optional WireGuard). |
 
 ## Quick-start decision
 
@@ -50,13 +50,6 @@ Do you need remote admin access to the VPS?
 ```
 
 See [ingress.md](ingress.md) for the full decision matrix.
-  
-# Security
-
-| File | Description |
-| --- | --- |
-| [security/ssh-hardening.md](security/ssh-hardening.md) | Enhancements to SSH security. |
-| [security/crowdsec-nftables.md](security/crowdsec-nftables.md) | CrowdSec installation + nftables bouncer integration for SSH-only ingress (Cloudflare Tunnel + optional WireGuard). |
 
 ---
 
