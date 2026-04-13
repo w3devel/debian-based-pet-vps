@@ -1,4 +1,4 @@
-# /docs — Ingress, VPN & Security Patterns
+# Ingress, VPN & Security Patterns
 
 This directory documents the recommended patterns for exposing services on a
 **Debian 12 (bookworm)** pet VPS where:
@@ -47,3 +47,5 @@ Do you need remote admin access to the VPS?
 ```
 
 See [ingress.md](ingress.md) for the full decision matrix.
+
+For QEMU, see [qemu.md](qemu.md) if using image files.
