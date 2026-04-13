@@ -1,4 +1,4 @@
-# 12. QEMU Lab — disk images, overlays, snapshots, and live boot tests
+# QEMU Lab — disk images, overlays, snapshots, and live boot tests
 
 This section adds a **QEMU-first lab workflow** that pairs well with the repo’s template ladder (**web1 → web2 → web3**) described in the root `README.md`.
 
