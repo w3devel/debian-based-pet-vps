@@ -1,4 +1,4 @@
-# w3dev.tech — Secure Multi-Site VPS Deployment
+# Debian-based pet VPS: Secure Multi-Site VPS Deployment
 
 A reference configuration and runbook for a hardened, single-VPS web stack using:
 
