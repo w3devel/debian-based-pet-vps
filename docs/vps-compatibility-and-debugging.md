@@ -215,7 +215,7 @@ your VPS hypervisor **forbids network namespaces**, which makes:
 
 **impossible**, even though everything else appears correct.
 
-This is the exact failure mode we discovered on Namecheap VPS hosting.
+This is the exact failure mode we discovered on [Namecheap VPS hosting](namecheap.md).
 
 ---
 
