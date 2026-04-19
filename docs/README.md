@@ -9,7 +9,7 @@ This directory documents the recommended patterns for exposing services on a
 - **Traefik** is an optional routing layer for multi-app cases.
 - **WireGuard** provides secure full-tunnel remote admin access.
 
-**Make sure to [test for VPS compatibility](docs/vps-compatibility-and-debugging.md)!**
+**Remember to test [VPS compatibility](docs/vps-compatibility-and-debugging.md)!**
 
 ## Ingress & Service Exposure
 
