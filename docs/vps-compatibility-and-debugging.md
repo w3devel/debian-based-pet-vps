@@ -19,10 +19,11 @@ Run this one command:
 
 ```
 unshare -n true; echo $?
+```
 
 If it prints 0 → your VPS supports PET‑VPS.
+
 If it prints 1 → your VPS is fake KVM and PET‑VPS cannot run.
-```
 
 ---
 
