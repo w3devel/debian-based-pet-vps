@@ -10,13 +10,6 @@ A reference configuration and runbook for a hardened, single-VPS web stack using
 
 **First, make sure to thoroughly test [VPS compatibility](docs/vps-compatibility-and-debugging.md).**
 
----
-
-> **License:** [MIT-0](LICENSE) — no attribution required. This is reference
-> configuration, not owned code.
-
----
-
 ## Template Ladder: web1 → web2 → web3
 
 This repo is organised as a progression of templates. Start at web1 and move
