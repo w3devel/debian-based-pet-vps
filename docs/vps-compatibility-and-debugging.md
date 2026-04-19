@@ -13,6 +13,19 @@ This guide is intentionally thorough so you can reproduce the investigation and 
 
 ---
 
+# **0. TL;DR: Does my VPS work?
+
+Run this one command:
+
+```
+unshare -n true; echo $?
+
+If it prints 0 → your VPS supports PET‑VPS.
+If it prints 1 → your VPS is fake KVM and PET‑VPS cannot run.
+```
+
+---
+
 # **1. Verify systemd‑machined is present and functional**
 
 PET‑VPS requires:
