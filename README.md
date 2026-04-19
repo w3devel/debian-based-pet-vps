@@ -8,7 +8,7 @@ A reference configuration and runbook for a hardened, single-VPS web stack using
 - **nftables** — host firewall permitting only 22 / 80 / 443
 - **OpenSSH** — hardened with a dedicated tunnel-only user
 
-First, make sure to thoroughly [test for VPS compatibility](docs/vps-compatibility-and-debugging.md).
+**First, make sure to thoroughly test [VPS compatibility](docs/vps-compatibility-and-debugging.md).**
 
 ---
 
