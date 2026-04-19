@@ -13,7 +13,7 @@ This guide is intentionally thorough so you can reproduce the investigation and 
 
 ---
 
-# **0. TL;DR: Does my VPS work?
+# **0. TL;DR: Does my VPS work?**
 
 Run this one command:
 
